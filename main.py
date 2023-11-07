@@ -2,7 +2,6 @@ import pygame
 from board import Board
 
 
-# TODO: change this function from generating a mosaic solver to generating a kakuro solver
 def kakuro_to_ampl(board: list[list[list[int]]]):
     # helper dictionary to conert indeces to strings
     index_to_string = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine'}
@@ -12,6 +11,9 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
         f.write('# Note: There is a -1st row and column, and a 5th row and column.\n')
         f.write('# These rows and collumns function as 0 paddings so that the indices will not be out of bounds\n\n')
         f.write(f'set I = -1 .. {len(board)};\n\n')
+        # creates sets for each length
+        for i in range(1, len(board)):
+            f.write(f'set {index_to_string[i]}_long_interval = 1 .. {i};\n')
         f.write('set R = -1 .. 1;\n\n')
         f.write('var X {I, I}, binary;\n\n')
         f.write('# paddings must be zeros\n')
@@ -21,11 +23,30 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
         f.write(f's.t. lastCol: sum {{i in I}} X[i, {len(board)}] = 0;\n\n')
         f.write('# actual conditions for the game\n')
         f.write('# (the first part of the statement reflects the row, the second part of the statement reflects the column)\n')
+        
         for i in range(len(board)):
             for j in range(len(board[0])):
-                if (num := board[i][j]) != -1:
+                # sum of the tiles vertically down equals the number in the tile
+                if (num := board[i][j][0]) > 0:
                     name = index_to_string[i] + '_' + index_to_string[j]
-                    f.write(f's.t. {name}: sum {{i in R}} sum {{j in R}} X[{i}+i, {j}+j] = {num};\n')
+                    # check how far until the next wall or edge of the board
+                    walker = i+1
+                    while walker < len(board):
+                        if board[walker][j][0] > -1 or board[walker][j][1] > -1:
+                            break
+                        walker += 1
+                    f.write(f's.t. {name}: sum {{i in {index_to_string[walker-1]}_long_interval}} X[{i}+i, {j}] = {num};\n')
+
+                # sum of the tiles horizontally to the right equals the number in the tile
+                if (num := board[i][j][1]) > 0:
+                    name = index_to_string[i] + '_' + index_to_string[j]
+                    # check how far until the nexxt wall or edge of the board
+                    walker = j+1
+                    while walker < len(board[0]):
+                        if board[i][walker][0] > -1 or board[i][walker][1] > -1:
+                            break
+                        walker += 1
+                    f.write(f's.t. {name}: sum {{j in {index_to_string[walker-1]}_long_interval}} X[{i}, {j}+j] = {num};\n')
 
 
 def main():
