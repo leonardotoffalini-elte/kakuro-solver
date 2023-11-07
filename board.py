@@ -64,6 +64,7 @@ class Board:
         if self.mode == 'outline':
             if self.selected_tile is not None:
                 self.selected_tile.draw_color = LIGHT if self.selected_tile.draw_color == DARK else DARK
+                self.board[y][x] = [0, 0]
                 self.selected_tile = None
 
         if self.mode == 'value':
@@ -76,9 +77,15 @@ class Board:
     def assign_value(self, value:int):
         if self.selected_tile is None:
             return
+        if self.selected_tile.draw_color == LIGHT:
+            self.selected_tile = None
+            self.selected_side = None
+            return
         if self.selected_side == 'left':
             self.selected_tile.value[0] = value
+            self.board[self.selected_tile.y_index][self.selected_tile.x_index][0] = value
         else:
             self.selected_tile.value[1] = value
+            self.board[self.selected_tile.y_index][self.selected_tile.x_index][1] = value
         self.selected_tile = None
         self.selected_side = None

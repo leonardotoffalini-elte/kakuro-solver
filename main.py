@@ -2,7 +2,8 @@ import pygame
 from board import Board
 
 
-def mosaic_to_ampl(board: list[list[int]]):
+# TODO: change this function from generating a mosaic solver to generating a kakuro solver
+def kakuro_to_ampl(board: list[list[list[int]]]):
     # helper dictionary to conert indeces to strings
     index_to_string = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine'}
 
@@ -65,7 +66,8 @@ def main():
         board.draw(screen)
         pygame.display.update()
 
-    mosaic_to_ampl(board.board)
+    kakuro_to_ampl(board.board)
+    print(board.board)
     pygame.quit()
 
 if __name__ == '__main__':
