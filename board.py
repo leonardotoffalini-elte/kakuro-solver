@@ -1,5 +1,5 @@
 import pygame
-from tile import Tile, BLACK, GREY
+from tile import Tile, BLACK, GREY, LIGHT, DARK
 
 pygame.init()
 
@@ -8,8 +8,11 @@ class Board:
         self.board_size = board_size
         self.num_tiles = num_tiles
         self.tile_size = self.board_size // self.num_tiles
-        self.selected_value = None
+        self.selected_side = None
+        self.selected_tile = None
         self.screen = screen
+
+        self.mode = 'outline' # 'outline 'or 'value'
 
         if board is None:
             self.board = [[[-1, -1] for _ in range(self.num_tiles)] for _ in range(self.num_tiles)]
@@ -25,8 +28,6 @@ class Board:
             for j in range(self.num_tiles):
                 new_tile = Tile(i, j, self.tile_size, self.screen)
                 new_tile.value = self.board[i][j]
-                """ if (val := self.board[i][j]) != -1:
-                    new_tile.piece.value = val """
                 tiles_list.append(new_tile)
         return tiles_list
 
@@ -50,7 +51,7 @@ class Board:
         """ Highlights clicked tile, selects the piece on clicked tile if applicable, moves piece if applicable """
         x = x // self.tile_size
         y = y // self.tile_size
-        clicked_tile = self.get_tile_from_pos(x, y)
+        self.selected_tile = self.get_tile_from_pos(x, y)
 
         """
         1 - left click
@@ -60,21 +61,24 @@ class Board:
         5 - scroll down
         """
 
-        # TODO: think up a better way to assign values to the two sides of the tiles
-        if self.selected_value is None and clicked_tile.value is not None:
-            if click_type == 1:
-                clicked_tile.value[0] = (clicked_tile.value[0] + 1) % 10
-                self.board[y][x][0] = (self.board[y][x][0] + 1) % 10
-            elif click_type == 2:
-                if clicked_tile.draw_color == GREY:
-                    clicked_tile.draw_color = (92, 75, 75) if (y + x)%2 else (220, 189, 194)
-                else:
-                    clicked_tile.draw_color = GREY
-                clicked_tile.value = (-1, -1)
-            elif click_type == 3:
-                clicked_tile.value[1] = (clicked_tile.value[1] + 1) % 10
-                self.board[y][x][1] = (self.board[y][x][1] + 1) % 10
+        if self.mode == 'outline':
+            if self.selected_tile is not None:
+                self.selected_tile.draw_color = LIGHT if self.selected_tile.draw_color == DARK else DARK
+                self.selected_tile = None
 
-        for tile in self.tiles_list:
-            tile.highlight = False
-        clicked_tile.highlight = False
+        if self.mode == 'value':
+            if self.selected_side is None:
+                if click_type == 1:
+                    self.selected_side = 'left'
+                elif click_type == 3:
+                    self.selected_side = 'right'
+
+    def assign_value(self, value:int):
+        if self.selected_tile is None:
+            return
+        if self.selected_side == 'left':
+            self.selected_tile.value[0] = value
+        else:
+            self.selected_tile.value[1] = value
+        self.selected_tile = None
+        self.selected_side = None

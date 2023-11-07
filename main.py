@@ -37,10 +37,25 @@ def main():
 
     while running:
         for event in pygame.event.get():
+            # quit the game
             if event.type == pygame.QUIT:
                 running = False
+
+            # change color of tile when clicked in outline mode, select a tile and side in value mode
             if event.type == pygame.MOUSEBUTTONDOWN:
                 board.handle_click(event.pos[0], event.pos[1], event.button)
+            
+            # change the mode by pressing Shift and Enter at the same time
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LSHIFT] and keys[pygame.K_RETURN]:
+                board.mode = 'outline' if board.mode == 'value' else 'value'
+
+            # takes input and assigns value to the selected side of the selected tile
+            if board.selected_tile is not None and board.mode == 'value':
+                number_input = int(input('Enter a numerical value for the selected tile: '))
+                board.assign_value(number_input)
+
+            # resize the screen
             if event.type == pygame.VIDEORESIZE:
                 screen = pygame.display.set_mode((event.w, event.w), pygame.RESIZABLE)
                 board.board_size = screen.get_width()

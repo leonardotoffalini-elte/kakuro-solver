@@ -3,6 +3,8 @@ import pygame
 pygame.init() 
 BLACK = (0, 0, 0)
 LIGHT = (220, 189, 194)
+DARK = (31, 12, 8)
+WHITE = (255, 255, 255)
 GREY = (40, 40, 40)
 
 class Tile:
@@ -18,7 +20,7 @@ class Tile:
         self.y_index = row # row index
 
         self.color = 'light'
-        self.draw_color = LIGHT if self.color == 'light' else BLACK
+        self.draw_color = LIGHT if self.color == 'light' else DARK
         self.highlight_color = (100, 249, 83) if self.color == 'light' else (0, 200, 10)
         self.highlight = False
 
@@ -43,11 +45,11 @@ class Tile:
 
         if self.value[0] != -1 or self.value[1] != -1:
             if self.value[0] != -1:
-                number = self.font.render(str(self.value[0]), True, BLACK)
+                number = self.font.render(str(self.value[0]), True, LIGHT)
                 number_rect = number.get_rect(center=(self.rect.centerx - self.rect.height//4, self.rect.centery + self.rect.width//4))
                 self.screen.blit(number, number_rect)
             if self.value[1] != -1:
-                number = self.font.render(str(self.value[1]), True, BLACK)
+                number = self.font.render(str(self.value[1]), True, LIGHT)
                 number_rect = number.get_rect(center=(self.rect.centerx + self.rect.height//4, self.rect.centery - self.rect.width//4))
                 self.screen.blit(number, number_rect)
-            line = pygame.draw.line(self.screen, BLACK, (self.rect.left, self.rect.top), (self.rect.right, self.rect.bottom), 2)
+            line = pygame.draw.line(self.screen, LIGHT, (self.rect.left, self.rect.top), (self.rect.right, self.rect.bottom), 2)
