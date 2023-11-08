@@ -1,6 +1,6 @@
 ## Kakuro to AMPL
 
-Kakuro is a kind of logic puzzle that is often referred to as a mathematical transliteration of the crossword.
+Kakuro is a kind of logic puzzle that is often referred to as a mathematical transliteration of the crossword. <br />
 This script generates a file for a given mosaic board state that contains the constraints modelled in an LP solver language like AMPL.
 
 ### Game rules
@@ -15,7 +15,7 @@ The kakuro game is played as follows:
 
 ### Dependencies
 
-In order to use the GUI of the script you need to have pygame installed.
+In order to use the GUI of the script you need to have pygame installed. <br />
 To install pygame run the following command in your terminal:
 `pip install pygame`
 
@@ -33,5 +33,5 @@ To use this script with the provided Graphical User Interface:
     ii. Right click on a Black tile to assign a value to the top right triangle.
     iii. Enter the desired value in the terminal.
 5. Once satisfied with the created board, exit out of the GUI. A file named **_output.txt_** is created in the root directory.
-6. Copy the contents of the **_output.txt_** file into your LP/IP solver of choice.
+6. Copy the contents of the **_output.txt_** file into your IP solver of choice, like AMPL.
 
