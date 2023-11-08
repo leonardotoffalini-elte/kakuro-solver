@@ -36,7 +36,15 @@ class Board:
         """ Draws the board with the tiles and the piece one the tiles """
         for tile in self.tiles_list:
             tile.draw(display)
-    
+
+    def highlight_triangle(self):
+        if self.selected_tile is not None and self.selected_side is not None:
+            print('HERE')
+            point_x = self.selected_tile.rect.topleft
+            point_y = self.selected_tile.rect.bottomright
+            point_z = self.selected_tile.rect.bottomleft if self.selected_side == 'left' else self.selected_tile.rect.bottomright
+            print(point_x, point_y, point_z)
+            pygame.draw.polygon(self.screen, (0, 200, 10), (point_x, point_y, point_z))
 
 
     def get_tile_from_pos(self, x: int, y: int) -> Tile|None:

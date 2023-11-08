@@ -78,6 +78,7 @@ def main():
 
             # takes input and assigns value to the selected side of the selected tile
             if board.selected_tile is not None and board.mode == 'value':
+                # board.highlight_triangle()
                 number_input = int(input('Enter a numerical value for the selected tile: '))
                 board.assign_value(number_input)
 
@@ -92,7 +93,6 @@ def main():
         pygame.display.update()
 
     kakuro_to_ampl(board.board)
-    print(board.board)
     pygame.quit()
 
 if __name__ == '__main__':
