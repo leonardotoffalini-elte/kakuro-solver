@@ -26,12 +26,12 @@ To use this script with the provided Graphical User Interface:
 
 1. Run the **_main.py_** script.
 2. Press **_Shift_** + **_Enter_** to change mode.
-3. In the outline mode:
+3. In the outline mode: <br />
     i. Click on a tile to change its color from Black to White or from White to Black.
 4. In the value mode:
-    i. Left click on a Black tile to assign a value to the bottom left triangle.
-    ii. Right click on a Black tile to assign a value to the top right triangle.
-    iii. Enter the desired value in the terminal.
+    i. Left click on a Black tile to assign a value to the bottom left triangle. <br />
+    ii. Right click on a Black tile to assign a value to the top right triangle. <br />
+    iii. Enter the desired value in the terminal. <br />
 5. Once satisfied with the created board, exit out of the GUI. A file named **_output.txt_** is created in the root directory.
 6. Copy the contents of the **_output.txt_** file into your IP solver of choice, like AMPL.
 
