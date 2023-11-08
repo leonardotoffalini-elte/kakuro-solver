@@ -16,15 +16,15 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
         for i in range(1, len(board)):
             f.write(f'set {index_to_string[i]}_long_interval = 1 .. {i};\n')
         f.write('set R = -1 .. 1;\n\n')
-        f.write('var X {I, I, 9}, binary;\n\n')
+        f.write('var X {I, I, N}, binary;\n\n')
         f.write('# paddings must be zeros\n')
-        f.write('s.t. firstRow: sum {i in I} X[-1, i] = 0;\n')
-        f.write(f's.t. lastRow: sum {{i in I}} X[{len(board)}, i] = 0;\n')
-        f.write('s.t. firstCol: sum {i in I} X[i, -1] = 0;\n')
-        f.write(f's.t. lastCol: sum {{i in I}} X[i, {len(board)}] = 0;\n\n')
+        f.write(f's.t. firstRow: sum {{n in N}}sum {{i in I}} X[-1, i, n] = 0;\n')
+        f.write(f's.t. lastRow: sum {{n in N}}sum {{i in I}} X[{len(board)}, i, n] = 0;\n')
+        f.write(f's.t. firstCol: sum {{n in N}}sum {{i in I}} X[i, -1, n] = 0;\n')
+        f.write(f's.t. lastCol: sum {{n in N}}sum {{i in I}} X[i, {len(board)}, n] = 0;\n\n')
         f.write('# each row and column most have only one of each number at most\n')
-        f.write(f's.t. row_unique {{i in I, n in N}}: sum {{j in I}} X[i, j, n] < 2;\n')
-        f.write(f's.t. col_unique {{j in I, n in N}}: sum {{i in I}} X[i, j, n] < 2;\n')
+        f.write(f's.t. row_unique {{i in I, n in N}}: sum {{j in I}} X[i, j, n] <= 1;\n')
+        f.write(f's.t. col_unique {{j in I, n in N}}: sum {{i in I}} X[i, j, n] <= 1;\n')
         f.write('\n# actual conditions for the game\n')
         f.write('# (the first part of the statement reflects the row, the second part of the statement reflects the column)\n')
         
@@ -39,7 +39,7 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
                         if board[walker][j][0] > -1 or board[walker][j][1] > -1:
                             break
                         walker += 1
-                    f.write(f's.t. {name}: sum {{i in {index_to_string[walker-1]}_long_interval}} X[{i}+i, {j}] = {num};\n')
+                    f.write(f's.t. {name}_down: sum {{n in N}} sum {{i in {index_to_string[walker-1]}_long_interval}} X[{i}+i, {j}, n] = {num};\n')
 
                 # sum of the tiles horizontally to the right equals the number in the tile
                 if (num := board[i][j][1]) > 0:
@@ -50,7 +50,7 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
                         if board[i][walker][0] > -1 or board[i][walker][1] > -1:
                             break
                         walker += 1
-                    f.write(f's.t. {name}: sum {{j in {index_to_string[walker-1]}_long_interval}} X[{i}, {j}+j] = {num};\n')
+                    f.write(f's.t. {name}_right: sum {{n in N}} sum {{j in {index_to_string[walker-1]}_long_interval}} X[{i}, {j}+j, n] = {num};\n')
 
 
 def main():
