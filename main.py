@@ -8,20 +8,24 @@ def kakuro_to_ampl(board: list[list[list[int]]]):
 
     # creating the output file
     with open('output.txt', 'w') as f:
-        f.write('# Note: There is a -1st row and column, and a 5th row and column.\n')
+        f.write(f'# Note: There is a -1st row and column, and a {len(board)}th row and column.\n')
         f.write('# These rows and collumns function as 0 paddings so that the indices will not be out of bounds\n\n')
         f.write(f'set I = -1 .. {len(board)};\n\n')
+        f.write('set N = 1 .. 9;\n\n')
         # creates sets for each length
         for i in range(1, len(board)):
             f.write(f'set {index_to_string[i]}_long_interval = 1 .. {i};\n')
         f.write('set R = -1 .. 1;\n\n')
-        f.write('var X {I, I}, binary;\n\n')
+        f.write('var X {I, I, 9}, binary;\n\n')
         f.write('# paddings must be zeros\n')
         f.write('s.t. firstRow: sum {i in I} X[-1, i] = 0;\n')
         f.write(f's.t. lastRow: sum {{i in I}} X[{len(board)}, i] = 0;\n')
         f.write('s.t. firstCol: sum {i in I} X[i, -1] = 0;\n')
         f.write(f's.t. lastCol: sum {{i in I}} X[i, {len(board)}] = 0;\n\n')
-        f.write('# actual conditions for the game\n')
+        f.write('# each row and column most have only one of each number at most\n')
+        f.write(f's.t. row_unique {{i in I, n in N}}: sum {{j in I}} X[i, j, n] < 2;\n')
+        f.write(f's.t. col_unique {{j in I, n in N}}: sum {{i in I}} X[i, j, n] < 2;\n')
+        f.write('\n# actual conditions for the game\n')
         f.write('# (the first part of the statement reflects the row, the second part of the statement reflects the column)\n')
         
         for i in range(len(board)):
